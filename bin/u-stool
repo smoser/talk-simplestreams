@@ -22,7 +22,7 @@ sdata=(
 SPROG="sstream-query"
 case "$0" in
    *smirror) SPROG="sstream-mirror";;
-   *squery) SPROG="sstream-squery";;
+   *squery) SPROG="sstream-query";;
    *)
       echo "Expect to be called usmirror or usquery, not ${0##*/}";
       exit 1;;
