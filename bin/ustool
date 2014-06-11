@@ -1,0 +1,77 @@
+#!/bin/bash
+
+declare -A sdata
+CIU_COM="http://cloud-images.ubuntu.com"
+CIU_COM_R="$CIU_COM/releases"
+MU_COM="http://maas.ubuntu.com/images/ephemeral-v2/"
+CST="https://swift.canonistack.canonical.com/v1/AUTH_a48765cc0e864be980ee21ae26aaaed4"
+sdata=(
+  [uc-release]="$CIU_COM_R/streams/v1/index.sjson"
+  [uc-aws]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:aws.sjson"
+  [uc-azure]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:azure.sjson"
+  [uc-dl]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:download.json"
+  [uc-daily]="$CIU_COM/daily/streams/v1/index.sjson"
+  [maas-release]="$MU_COM/releases/streams/v1/index.sjson"
+  [maas-daily]="$MU_COM/daily/streams/v1/index.sjson"
+  [cirros]="http://download.cirros-cloud.net/streams/v1/index.json"
+  [cstack]="$CST/simplestreams/data/streams/v1/index.json"
+  [luc-release]="luc-release/streams/v1/index.sjson"
+  [luc-aws]="luc-aws/streams/v1/streams/v1/com.ubuntu.cloud:released:aws.sjson"
+)
+
+SPROG="sstream-query"
+case "$0" in
+   *mirror) SPROG="sstream-mirror";;
+esac
+
+error() { echo "$@" 1>&2; }
+fail() { [ $# -eq 0 ] || error "$@"; exit 1; }
+Usage() {
+   cat <<EOF
+Usage: ${0##*/} name options opt
+   a friendly wrapper to $SPROG.
+
+Name must be one of:
+EOF
+   for i in "${!sdata[@]}"; do
+      printf "%-12s %s\n"  "$i" "${sdata[$i]}"
+   done
+}
+
+name=""
+url=""
+for i in "$@"; do
+   case "$i" in
+      --help) { Usage; exit 0; };;
+      --dry-run) dry=true;;
+      -*) opts[${#opts[@]}]="$i";;
+      *) 
+         # the first argument is 'name'
+         if [ -z "$name" ]; then
+             name="$i"
+             [ -n "${sdata[$name]}" ] ||
+                fail "unknown name $name. see '--help' for list"
+             url=${sdata[$name]}
+             i="$url"
+         fi
+         args[${#args[@]}]="$i"
+         ;;
+   esac
+done
+
+[ -n "$name" ] || { Usage 1>&2; exit 1; }
+
+keyopt=""
+case "$url" in
+   *.json) :;;
+   *) keyopt="--keyring=/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg";;
+esac
+
+dry=false
+[ "$1" = "--dry-run" ] && dry=true && shift
+
+cmd=( "$SPROG" "${opts[@]}" "${args[@]}" )
+   
+$dry && echo "${cmd[@]}" && exit
+
+"${cmd[@]}"

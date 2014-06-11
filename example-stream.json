@@ -1,0 +1,35 @@
+{
+ "updated": "Wed, 11 Jun 2014 13:00:55 +0000", 
+ "license": "http://www.canonical.com/intellectual-property-policy", 
+ "format": "products:1.0", 
+ "datatype": "image-downloads", 
+ "products": {
+  "com.ubuntu.cloud:server:14.04:amd64": {
+   "release": "trusty", 
+   "version": "14.04", 
+   "arch": "amd64", 
+   "versions": {
+    "20140607.1": {
+     "items": {
+      "disk1.img": {
+       "size": 253755904, 
+       "path": "server/releases/trusty/release-20140607.1/ubuntu-14.04-server-cloudimg-amd64-disk1.img", 
+       "ftype": "disk1.img", 
+       "sha256": "58eb3a9bee962b3e53cefb7654c0437e805ac062280a41469546e94cb7196db7", 
+       "md5": "350353fbaee61e6b6f8eefa864bc2516"
+      }, 
+      "root.tar.gz": {
+       "size": 185723744, 
+       "path": "server/releases/trusty/release-20140607.1/ubuntu-14.04-server-cloudimg-amd64-root.tar.gz", 
+       "ftype": "root.tar.gz", 
+       "sha256": "f38e0d55fda1b231f34a7822fc7eae207f96b4d22cd94797a46428fa32835d1e", 
+       "md5": "7c31251585904d1aac813ae29c50ca27"
+      }
+     }, 
+     "pubname": "ubuntu-trusty-14.04-amd64-server-20140607.1", 
+     "label": "release"
+    }, 
+   }
+  }
+ }
+}

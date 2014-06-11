@@ -1,0 +1,34 @@
+{
+ "index": {
+  "com.ubuntu.cloud:released:aws": {
+   "updated": "Wed, 11 Jun 2014 13:09:07 +0000", 
+   "clouds": [
+     {"region": "us-east-1", "endpoint": "https://ec2.us-east-1.amazonaws.com"}, 
+     {"region": "eu-west-1", "endpoint": "https://ec2.eu-west-1.amazonaws.com"},
+     {"region": "us-west-2", "endpoint": "https://ec2.us-west-2.amazonaws.com"},
+   ], 
+   "format": "products:1.0", 
+   "datatype": "image-ids", 
+   "cloudname": "aws", 
+   "products": [
+    "com.ubuntu.cloud:server:14.04:i386", 
+    "com.ubuntu.cloud:server:14.04:amd64", 
+    "com.ubuntu.cloud:server:12.04:amd64", 
+   ], 
+   "path": "streams/v1/com.ubuntu.cloud:released:aws.json"
+  }, 
+  "com.ubuntu.cloud:released:download": {
+   "datatype": "image-downloads", 
+   "path": "streams/v1/com.ubuntu.cloud:released:download.json", 
+   "updated": "Wed, 11 Jun 2014 13:00:55 +0000", 
+   "products": [
+    "com.ubuntu.cloud:server:14.04:amd64", 
+    "com.ubuntu.cloud:server:14.04:arm64", 
+    "com.ubuntu.cloud:server:12.04:amd64", 
+   ], 
+   "format": "products:1.0"
+  }
+ }
+ "updated": "Wed, 11 Jun 2014 13:09:15 +0000", 
+ "format": "index:1.0"
+}

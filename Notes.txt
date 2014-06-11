@@ -1,0 +1,69 @@
+- Simplestreams
+  Simplestreams is a data format, a python client library and a command line
+  client to interact with the dataformat.
+  - Ubuntu publishes data about downloads and image-ids in simple streams format
+  - Juju queries simplestreams data to determine both its downloads and image-ids.
+
+- general overview of simplestreams
+  - all json data
+  - gpg signatures allow for secure use over insecure transfer (http)
+  - designed to be easily mirrored 
+    - without race conditions
+    - with gpg signatures kept intact
+  - generally, all items can have arbitrary "tags" which are key/value pairs
+  - some tags have specific meaning ('path')
+  - 2 different "format" are defined and used
+    - index:1.0
+      - indexes other files
+      - has 'index' dictionary that is populated with 'content_id's.
+    - products:1.0
+      - "content_id" : declares where this content is coming from.
+         example: "com.ubuntu.cloud:released:download"
+      - "products":
+         A product is something that acts in an expected way.  Examples of
+         a product is "com.ubuntu.cloud:server:11.10:i386"
+         or "com.ubuntu.cloud:server:12.04:amd64"
+         
+         Products have multiple "versions".  Each version should behave
+         similarly, essentially promising an ABI of sorts.
+
+         Other examples of a product might be:
+           libwhizbang:1.1:ppc64
+           python-foolib:1.1
+
+      - "versions"
+        Versions allow for updates of a product.  Ubuntu distributes cloud images
+        daily or on a 3 week release cadence.
+        a "Version" is then something like a YYYYMMDD format, but can be
+        anything.  newer versions are those that sort greater in a C-Locale sort.
+
+      - "items"
+        Items are things that go with that version.
+        Example items for cloud images are -disk1.img and .tar.gz.
+
+- usquery / usmirror
+  simple wrapper around sstream-query and sstream-mirror that knows urls
+
+- sstream-mirror
+  - filters allow you to filter entries by tags using operators:
+     ~, !~, =, !=
+
+  - Example 1:
+    ./bin/usmirror --dry-run uc-release luc-release --no-item-download
+    ./bin/usmirror uc-release luc-release --no-item-download
+    ./bin/usmirror uc-daily luc-daily --no-item-download
+
+  - Example 2: mirror cirros data, show --progress
+    ./bin/usquery cirros --pretty --max=1
+    ./bin/usquery cirros  --pretty --max=1 stream=released
+    tenv ./bin/usmirror cirros arch=amd64 lcirros
+
+  - 
+
+
+- sstream-query
+
+- example-sync / GlanceMirror
+  - GlanceMirror mirrors a cloud-image products data into glance.
+  - it can publish simplestreams data to swift, which then can be queried
+  
