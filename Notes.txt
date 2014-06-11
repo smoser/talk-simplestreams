@@ -130,3 +130,8 @@
      cstack query trusty
      cstack qrun trusty --user-data=my-user-data
   - https://code.launchpad.net/~smoser/simplestreams/cstack
+
+- sstream-sync
+  - "hook based sync"
+    calls other programs with items to be added or removed.
+  - example: http://bazaar.launchpad.net/~smoser/simplestreams/trunk/view/head:/tools/hook-check-downloads
