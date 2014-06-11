@@ -123,3 +123,10 @@
   - GlanceMirror mirrors a cloud-image products data into glance.
   - it can publish simplestreams data to swift, which then can be queried
   - crates data like at https://swift.canonistack.canonical.com/v1/AUTH_a48765cc0e864be980ee21ae26aaaed4/simplestreams/data/streams/v1/index.json
+
+- cstack
+  - This is an simple client that queries openstack ids from a simplestreams mirror.
+    It knows heuristics and makes launching easier:
+     cstack query trusty
+     cstack qrun trusty --user-data=my-user-data
+  - https://code.launchpad.net/~smoser/simplestreams/cstack
