@@ -9,3 +9,4 @@ The only prep done ahead of time was:
  git clone https://github.com/smoser/talk-simplestreams.git talk
  bzr branch lp:simplestreams  talk/simplestreams
  export PATH=$PWD/talk/bin:$PWD/talk/simplestreams/tools:$PATH
+ cd talk
