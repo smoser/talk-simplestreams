@@ -16,7 +16,7 @@ sdata=(
   [cirros]="http://download.cirros-cloud.net/streams/v1/index.json"
   [cstack]="$CST/simplestreams/data/streams/v1/index.json"
   [luc-release]="luc-release/streams/v1/index.sjson"
-  [luc-aws]="luc-aws/streams/v1/streams/v1/com.ubuntu.cloud:released:aws.sjson"
+  [luc-aws]="luc-aws/streams/v1/com.ubuntu.cloud:released:aws.sjson"
 )
 
 SPROG="sstream-query"
