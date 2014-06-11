@@ -21,8 +21,9 @@ sdata=(
 
 SPROG="sstream-query"
 case "$0" in
-   *mirror) SPROG="sstream-mirror";;
-   *ustool)
+   *smirror) SPROG="sstream-mirror";;
+   *squery) SPROG="sstream-mirror";;
+   *)
       echo "Expect to be called usmirror or usquery, not ${0##*/}";
       exit 1;;
 esac
@@ -43,6 +44,7 @@ EOF
 
 name=""
 url=""
+dry=false
 for i in "$@"; do
    case "$i" in
       --help) { Usage; exit 0; };;
@@ -70,10 +72,7 @@ case "$url" in
    *) keyopt="--keyring=/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg";;
 esac
 
-dry=false
-[ "$1" = "--dry-run" ] && dry=true && shift
-
-cmd=( "$SPROG" "${opts[@]}" "${args[@]}" )
+cmd=( "$SPROG" ${keyopt:+"${keyopt}"} "${opts[@]}" "${args[@]}" )
    
 $dry && echo "${cmd[@]}" && exit
 
