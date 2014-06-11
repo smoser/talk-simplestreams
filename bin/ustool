@@ -22,6 +22,9 @@ sdata=(
 SPROG="sstream-query"
 case "$0" in
    *mirror) SPROG="sstream-mirror";;
+   *ustool)
+      echo "Expect to be called usmirror or usquery, not ${0##*/}";
+      exit 1;;
 esac
 
 error() { echo "$@" 1>&2; }
