@@ -6,6 +6,6 @@ The session was executed on a fresh 14.04 Ubuntu cloud instance.
 
 The only prep done ahead of time was:
  apt-get update && apt-get install --assume-yes git bzr
- git clone THING talk
+ git clone https://github.com/smoser/talk-simplestreams.git talk
  bzr branch lp:simplestreams  talk/simplestreams
  export PATH=$PWD/talk/bin:$PWD/talk/simplestreams/tools:$PATH
