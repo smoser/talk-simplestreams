@@ -113,8 +113,10 @@
             "--output-format=%(sha256)s %(item_url)s" --max=1)
     echo $out
     sum=${out% *}; url=${out#* };
+    echo "${sum}  trusty-disk1.img" > sums
+
     wget "$url" -O trusty-disk1.img
-    sha256 trusty-disk1.img
+    sha256sum --check sums
 
 - example-sync / GlanceMirror
   - https://code.launchpad.net/~smoser/simplestreams/example-sync
