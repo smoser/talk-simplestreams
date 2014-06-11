@@ -49,6 +49,7 @@ for i in "$@"; do
    case "$i" in
       --help) { Usage; exit 0; };;
       --dry-run) dry=true;;
+      ---dry-run) opts[${#opts[@]}]="--dry-run";;
       -*) opts[${#opts[@]}]="$i";;
       *) 
          # the first argument is 'name'
