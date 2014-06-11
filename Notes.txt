@@ -49,21 +49,75 @@
      ~, !~, =, !=
 
   - Example 1:
-    ./bin/usmirror --dry-run uc-release luc-release --no-item-download
-    ./bin/usmirror uc-release luc-release --no-item-download
-    ./bin/usmirror uc-daily luc-daily --no-item-download
+    u-smirror --no-item-download uc-release ./luc-release --dry-run 
+    u-smirror --no-item-download uc-release ./luc-release
+    u-smirror uc-release ./luc-release --no-item-download
+
+    find luc-release/ -type f
+
+    # explicitly mirror the .json (unsigned data)
+    sstream-mirror --no-item-download \
+       http://cloud-images.ubuntu.com/releases/streams/v1/index.json ./luc-release
+
+    find luc-release/ -type f
 
   - Example 2: mirror cirros data, show --progress
-    ./bin/usquery cirros --pretty --max=1
-    ./bin/usquery cirros  --pretty --max=1 stream=released
-    tenv ./bin/usmirror cirros arch=amd64 lcirros
+    u-squery cirros --pretty --max=1
+    u-squery cirros --pretty --max=1 stream=released
 
-  - 
+    # use tenv here to use trunk to show '--progress'
+    tenv u-smirror cirros stream=released ftype=disk.img ./lcirros --progress
 
+    find lcirros/ -type f
 
 - sstream-query
 
+  - Example 1: just dump a lot of data.  This dumps all data for all items
+    in the provided url (released ubuntu cloud images).
+     u-squery uc-release --pretty --dry-run
+     u-squery uc-release --pretty 
+
+    Since we mirrored that, we can query the local mirror.
+     u-squery luc-release --pretty --max=1 --dry-run
+
+  - Example 2: Show me ami-ids on AWS
+     u-squery uc-aws --pretty --dry-run
+     u-squery luc-aws --pretty --max=1 --dry-run
+     u-squery luc-aws --pretty --max=1 arch=amd64 release=trusty
+     u-squery luc-aws --max=1  "--output-format=%(region)s %(pubname)s" \
+         release=trusty
+
+     u-squery luc-aws --output-format="%(id)s %(pubname)s" | wc -l
+
+     iterate/improve to show
+
+     u-squery luc-aws --max=1 arch=amd64 release=trusty   \
+       --output-format="%(id)s %(region)-15s %(virt)-4s %(root_store)-10s %(pubname)"
+
+  - Example 3: Show me ami-ids on Azure
+    u-squery luc-release --max=1 | grep windows
+    
+    u-squery luc-release "--output-format=%(region)s %(id)s %(pubname)s" \
+      --max=1 endpoint=https://management.core.windows.net/ "region~Japan"
+
+    This shows a need for '--delimiter'.
+
+  - Example 4: safely download single url with simple shell
+
+    u-squery uc-dl --dry-run
+    u-squery uc-dl arch=amd64 ftype=disk1.img release=trusty  --pretty --max=1
+    u-squery uc-dl arch=amd64 ftype=disk1.img release=trusty \
+       "--output-format=%(sha256)s %(item_url)s"
+
+    out=$(u-squery uc-dl arch=amd64 ftype=disk1.img release=trusty \
+            "--output-format=%(sha256)s %(item_url)s" --max=1)
+    echo $out
+    sum=${out% *}; url=${out#* };
+    wget "$url" -O trusty-disk1.img
+    sha256 trusty-disk1.img
+
 - example-sync / GlanceMirror
+  - https://code.launchpad.net/~smoser/simplestreams/example-sync
   - GlanceMirror mirrors a cloud-image products data into glance.
   - it can publish simplestreams data to swift, which then can be queried
-  
+  - crates data like at https://swift.canonistack.canonical.com/v1/AUTH_a48765cc0e864be980ee21ae26aaaed4/simplestreams/data/streams/v1/index.json

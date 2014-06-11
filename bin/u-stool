@@ -9,14 +9,14 @@ sdata=(
   [uc-release]="$CIU_COM_R/streams/v1/index.sjson"
   [uc-aws]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:aws.sjson"
   [uc-azure]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:azure.sjson"
-  [uc-dl]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:download.json"
+  [uc-dl]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:download.sjson"
   [uc-daily]="$CIU_COM/daily/streams/v1/index.sjson"
   [maas-release]="$MU_COM/releases/streams/v1/index.sjson"
   [maas-daily]="$MU_COM/daily/streams/v1/index.sjson"
   [cirros]="http://download.cirros-cloud.net/streams/v1/index.json"
   [cstack]="$CST/simplestreams/data/streams/v1/index.json"
-  [luc-release]="luc-release/streams/v1/index.sjson"
-  [luc-aws]="luc-aws/streams/v1/com.ubuntu.cloud:released:aws.sjson"
+  [luc-release]="./luc-release/streams/v1/index.json"
+  [luc-aws]="./luc-release/streams/v1/com.ubuntu.cloud:released:aws.json"
 )
 
 SPROG="sstream-query"
@@ -39,7 +39,7 @@ Name must be one of:
 EOF
    for i in "${!sdata[@]}"; do
       printf "%-12s %s\n"  "$i" "${sdata[$i]}"
-   done
+   done | sort
 }
 
 name=""
