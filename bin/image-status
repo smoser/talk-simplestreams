@@ -62,7 +62,7 @@ main() {
         eval set -- "${getopt_out}" ||
         { bad_Usage; return; }
 
-    local cur="" next=""
+    local cur="" next="" max=1
     local output="" columns=""
 
     while [ $# -ne 0 ]; do
