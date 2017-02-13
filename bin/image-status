@@ -14,8 +14,22 @@ Usage: ${0##*/} [ options ] where [what]
 
    show information about latest images
 
+   where must be one of
+     cloud-daily
+     cloud-release
+     ec2-daily
+     ec2-release
+     maas-daily
+     maas-release
+     maas3-daily
+     maas3-release
+
    options:
-      <<OPTIONS HERE>>
+      -C | --no-columns    Do not force columns
+      -c | --columns       output columns (default if no --output-format)
+
+      -o | --output-format F   pass output-format along to sstream-query
+      -m | --max           M   give M results (default=1)
 EOF
 }
 
@@ -40,8 +54,8 @@ inargs() {
 }
 
 main() {
-    local short_opts="ho:v"
-    local long_opts="help,output:,verbose"
+    local short_opts="hCco:v"
+    local long_opts="help,no-columns,output:,columns,verbose"
     local getopt_out=""
     getopt_out=$(getopt --name "${0##*/}" \
         --options "${short_opts}" --long "${long_opts}" -- "$@") &&
@@ -49,14 +63,17 @@ main() {
         { bad_Usage; return; }
 
     local cur="" next=""
-    local output=""
+    local output="" columns=""
 
     while [ $# -ne 0 ]; do
         cur="$1"; next="$2";
         case "$cur" in
             -h|--help) Usage ; exit 0;;
+            -C|--no-columns) columns=false;;
+            -c|--columns) columns=true;;
             -o|--output) output=$next; shift;;
             -v|--verbose) VERBOSITY=$((${VERBOSITY}+1));;
+               --max) max=$next;;
             --) shift; break;;
         esac
         shift;
@@ -64,13 +81,17 @@ main() {
 
     ## check arguments here
     ## how many args do you expect?
-    [ $# -gt 0 ] || { bad_Usage "expect 1 or more args. got $*"; return; }
+    if [ $# -eq 0 ]; then
+        set -- cloud-daily
+    fi
     where="$1"
     shift
 
     local maas_fmt="%(release)s %(arch)s/%(subarch)s %(version_name)s %(item_name)s"
+    local maas3_fmt="%(release)s %(arch)s/%(subarch)s/%(kflavor)s %(version_name)s %(item_name)s"
     local img_fmt="%(release)s %(arch)s %(version_name)s %(item_name)s"
-    local maas_def_filters="" img_def_filters="" def_filters=""
+    local ec2_fmt="%(release)-7s %(version_name)-10s %(crsn)-14s %(root_store)-8s %(virt)-3s %(id)s"
+    local maas_def_filters="" img_def_filters="" def_filters="" dfmt=""
     def_filters=( "arch=amd64" )
     mtype=""
 
@@ -79,53 +100,89 @@ main() {
         maas|maas-daily)
             mtype="maas"
             uwhere="maas-eph-daily";;
+        maas3|maas3-daily)
+            mtype="maas3"
+            uwhere="maas3-eph-daily";;
         maas-release)
             mtype="maas"
             uwhere="maas-eph-rel";;
-        image-daily|image)
-            mtype="image"
+        cloud-daily|cloud)
+            mtype="cloud"
             uwhere="uc-dl-daily";;
-        image-release)
-            mtype="image"
+        cloud-release)
+            mtype="cloud"
             uwhere="uc-dl";;
+        ec2-daily|ec2)
+            uwhere="uc-aws-daily"
+            mtype="ec2";;
+        ec2-release)
+            uwhere="uc-aws"
+            mtype="ec2";;
+        *) error "where must be one of cloud{,-daily,-release} or maas{,-daily,-release} or ec2{,-daily,-release}";
+           return 1;;
     esac
     case "$mtype" in
         maas)
             def_filters=( "${def_filters[@]}" "ftype=root-image.gz" )
             fmt="$maas_fmt";;
-        image)
+        maas3)
+            def_filters=( "${def_filters[@]}" "ftype=squashfs" )
+            fmt="$maas3_fmt";;
+        cloud)
             def_filters=( "${def_filters[@]}" "ftype=disk1.img" )
             fmt="$img_fmt";;
+        ec2)
+            fmt="${ec2_fmt}";;
     esac
     fmt="--output-format=$fmt"
+    dfmt="$fmt"
 
     local defaults=true
-    local tok="" filters="" pt=""
+    local tok="" filters="" pt="" reltok="" maxarg="--max=$max"
     filters=( )
     pt=( )
     for tok in "$@"; do
         if inargs "$tok" "${RELEASES[@]}"; then
             tok="release=$tok"
+            reltok="$tok"
         elif inargs "$tok" "${ARCHES[@]}"; then
             tok="arch=$tok"
         fi
         case "$tok" in
             x) defaults=false;;
+            supported) reltok="$tok";;
             json) fmt="--json";;
             path) fmt="--output-format=%(path)s";;
             url) fmt="--output-format=%(item_url)s";;
+            all) maxarg="";;
             *=*|*~*) filters[${#filters[@]}]="$tok";;
             *) pt[${#pt[@]}]="$tok";;
         esac
     done
+    if [ -z "$reltok" -o "$reltok" = "supported" ]; then
+        local m=""
+        for r in $(ubuntu-distro-info --supported); do
+            m="${m:+${m}|}$r"
+        done
+        def_filters[${#def_filters[@]}]="release~$m"
+    fi
+
+    if [ -z "$columns" -a "$dfmt" = "$fmt" ]; then
+        columns=true
+    fi
+
     $defaults && filters=( "${def_filters[@]}" "${filters[@]}" )
 
-    cmd=( usquery "--max=1" "$fmt"
+    cmd=( usquery $maxarg "$fmt"
           "$uwhere" "${pt[@]}" "${filters[@]}" )
     debug 1 "${cmd[*]}"
-    "${cmd[@]}"
+
+    if "$columns"; then
+        "${cmd[@]}" | sort | column -t
+    else
+        "${cmd[@]}"
+    fi
 }
 
 main "$@"
-
 # vi: ts=4 expandtab
