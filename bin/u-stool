@@ -78,3 +78,5 @@ cmd=( "$SPROG" ${keyopt:+"${keyopt}"} "${opts[@]}" "${args[@]}" )
 $dry && echo "${cmd[@]}" && exit
 
 "${cmd[@]}"
+
+# vi: ts=4 expandtab
