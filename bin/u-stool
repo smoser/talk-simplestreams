@@ -1,22 +1,40 @@
 #!/bin/bash
+#
+# https://github.com/smoser/talk-simplestreams/blob/master/bin/u-stool
 
 declare -A sdata
 CIU_COM="http://cloud-images.ubuntu.com"
 CIU_COM_R="$CIU_COM/releases"
-MU_COM="http://maas.ubuntu.com/images/ephemeral-v2/"
+CIU_COM_D="$CIU_COM/daily"
+MU_COM="http://maas.ubuntu.com/images/ephemeral-v2"
+MAAS_v2="http://images.maas.io/ephemeral-v2"
+MAAS_v3="http://images.maas.io/ephemeral-v3"
 CST="https://swift.canonistack.canonical.com/v1/AUTH_a48765cc0e864be980ee21ae26aaaed4"
+SST="http://10.245.160.50:80/swift/v1/simplestreams/data/streams/v1/index.json"
 sdata=(
   [uc-release]="$CIU_COM_R/streams/v1/index.sjson"
   [uc-aws]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:aws.sjson"
+  [uc-aws-daily]="$CIU_COM_D/streams/v1/com.ubuntu.cloud:daily:aws.sjson"
   [uc-azure]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:azure.sjson"
+  [uc-azure-daily]="$CIU_COM_D/streams/v1/com.ubuntu.cloud:daily:azure.sjson"
+  [uc-gce-daily]="$CIU_COM_D/streams/v1/com.ubuntu.cloud:daily:gce.sjson"
+  [uc-gce]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:gce.sjson"
   [uc-dl]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:download.sjson"
   [uc-daily]="$CIU_COM/daily/streams/v1/index.sjson"
-  [maas-release]="$MU_COM/releases/streams/v1/index.sjson"
-  [maas-daily]="$MU_COM/daily/streams/v1/index.sjson"
+  [uc-dl-daily]="$CIU_COM/daily/streams/v1/com.ubuntu.cloud:daily:download.sjson"
+
+  [maas-release]="$MAAS_v2/releases/streams/v1/index.sjson"
+  [maas-daily]="$MAAS_v2/daily/streams/v1/index.sjson"
+  [maas-eph-rel]="$MAAS_v2/releases/streams/v1/com.ubuntu.maas:v2:download.sjson"
+  [maas-eph-daily]="$MAAS_v2/daily/streams/v1/com.ubuntu.maas:daily:v2:download.sjson"
+
+  [maas3-daily]="$MAAS_v3/daily/streams/v1/index.sjson"
+  [maas3-eph-daily]="$MAAS_v3/daily/streams/v1/com.ubuntu.maas:daily:v3:download.sjson"
+
   [cirros]="http://download.cirros-cloud.net/streams/v1/index.json"
   [cstack]="$CST/simplestreams/data/streams/v1/index.json"
-  [luc-release]="./luc-release/streams/v1/index.json"
-  [luc-aws]="./luc-release/streams/v1/com.ubuntu.cloud:released:aws.json"
+  [sstack]="$SST"
+  [smoser-images]="http://smoser.brickies.net/image-streams/streams/v1/index.json"
 )
 
 SPROG="sstream-query"
@@ -50,8 +68,11 @@ for i in "$@"; do
       --help) { Usage; exit 0; };;
       --dry-run) dry=true;;
       ---dry-run) opts[${#opts[@]}]="--dry-run";;
+      images)
+         opts[${#opts[@]}]="--output-format=%(version_name)s %(id)s %(pubname)s"
+         args[${#args[@]}]="datatype=image-ids";;
       -*) opts[${#opts[@]}]="$i";;
-      *) 
+      *)
          # the first argument is 'name'
          if [ -z "$name" ]; then
              name="$i"
@@ -74,9 +95,7 @@ case "$url" in
 esac
 
 cmd=( "$SPROG" ${keyopt:+"${keyopt}"} "${opts[@]}" "${args[@]}" )
-   
+
 $dry && echo "${cmd[@]}" && exit
 
 "${cmd[@]}"
-
-# vi: ts=4 expandtab
