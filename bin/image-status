@@ -87,10 +87,13 @@ main() {
     where="$1"
     shift
 
-    local maas_fmt="%(release)s %(arch)s/%(subarch)s %(version_name)s %(item_name)s"
-    local maas3_fmt="%(release)s %(arch)s/%(subarch)s/%(kflavor)s %(version_name)s %(item_name)s"
-    local img_fmt="%(release)s %(arch)s %(version_name)s %(item_name)s"
-    local ec2_fmt="%(release)-7s %(version_name)-10s %(crsn)-14s %(root_store)-8s %(virt)-3s %(id)s"
+    local tab=$'\t'
+    local maas_fmt="%(release)-7s$tab%(arch)s/%(subarch)s$tab%(version_name)s$tab%(item_name)s"
+    local maas3_fmt="%(release)-7s$tab%(arch)s/%(subarch)s/%(kflavor)s$tab%(version_name)s$tab%(item_name)s"
+    local img_fmt="%(release)-7s$tab%(arch)s$tab%(version_name)s$tab%(item_name)s"
+    local ec2_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(root_store)-8s$tab%(virt)-3s$tab%(id)s"
+    local azure_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(id)s"
+    local gce_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(id)s"
     local maas_def_filters="" img_def_filters="" def_filters="" dfmt=""
     def_filters=( "arch=amd64" )
     mtype=""
@@ -118,6 +121,18 @@ main() {
         ec2-release)
             uwhere="uc-aws"
             mtype="ec2";;
+        azure-daily|azure)
+            uwhere="uc-azure-daily"
+            mtype="azure";;
+        azure-release)
+            uwhere="uc-azure-daily"
+            mtype="azure";;
+        gce-daily|gce)
+            uwhere="uc-gce-daily"
+            mtype="gce";;
+        gce-release)
+            uwhere="uc-gce-daily"
+            mtype="gce";;
         *) error "where must be one of cloud{,-daily,-release} or maas{,-daily,-release} or ec2{,-daily,-release}";
            return 1;;
     esac
@@ -133,6 +148,8 @@ main() {
             fmt="$img_fmt";;
         ec2)
             fmt="${ec2_fmt}";;
+        azure) fmt="${azure_fmt}";;
+        gce) fmt="${gce_fmt}";;
     esac
     fmt="--output-format=$fmt"
     dfmt="$fmt"
@@ -178,7 +195,9 @@ main() {
     debug 1 "${cmd[*]}"
 
     if "$columns"; then
-        "${cmd[@]}" | sort | column -t
+        local delim=" "
+        [ "${fmt#*${tab}}" != "${fmt}" ] && delim="$tab"
+        "${cmd[@]}" | sort | column -t "-s$delim"
     else
         "${cmd[@]}"
     fi
