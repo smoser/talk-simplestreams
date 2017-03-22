@@ -8,21 +8,28 @@ RELEASES=( $(ubuntu-distro-info --all) )
 error() { echo "$@" 1>&2; }
 fail() { [ $# -eq 0 ] || error "$@"; exit 1; }
 
+dump_supported() {
+    cat <<EOF
+description    | names
+Azure cloud    | azure   azure-daily   azure-release
+cloud images   | cloud   cloud-daily   cloud-release
+AWS EC2        | ec2     ec2-daily     ec2-release
+Google Compute | gce     gce-daily     gce-release
+MAAS v2        | maas    maas-daily    maas-release
+MAAS v3        | maas3   maas3-daily   maas3-release
+EOF
+}
+
 Usage() {
     cat <<EOF
 Usage: ${0##*/} [ options ] where [what]
 
    show information about latest images
 
-   where must be one of
-     cloud-daily
-     cloud-release
-     ec2-daily
-     ec2-release
-     maas-daily
-     maas-release
-     maas3-daily
-     maas3-release
+   where must be one of:
+EOF
+    dump_supported | sed 's,^,    ,'
+    cat <<EOF
 
    options:
       -C | --no-columns    Do not force columns
@@ -55,7 +62,7 @@ inargs() {
 
 main() {
     local short_opts="hCco:v"
-    local long_opts="help,no-columns,output:,columns,verbose"
+    local long_opts="help,no-columns,output:,columns,max:,verbose"
     local getopt_out=""
     getopt_out=$(getopt --name "${0##*/}" \
         --options "${short_opts}" --long "${long_opts}" -- "$@") &&
@@ -133,7 +140,8 @@ main() {
         gce-release)
             uwhere="uc-gce-daily"
             mtype="gce";;
-        *) error "where must be one of cloud{,-daily,-release} or maas{,-daily,-release} or ec2{,-daily,-release}";
+        *) echo "unknown name '$where'. Must be one of:" 1>&2
+           dump_supported 1>&2
            return 1;;
     esac
     case "$mtype" in
