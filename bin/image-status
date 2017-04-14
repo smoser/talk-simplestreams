@@ -202,7 +202,7 @@ main() {
           "$uwhere" "${pt[@]}" "${filters[@]}" )
     debug 1 "${cmd[*]}"
 
-    if "$columns"; then
+    if [ "$columns" = "true" ]; then
         local delim=" "
         [ "${fmt#*${tab}}" != "${fmt}" ] && delim="$tab"
         "${cmd[@]}" | sort | column -t "-s$delim"
