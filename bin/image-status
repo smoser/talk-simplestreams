@@ -128,6 +128,9 @@ main() {
         ec2-release)
             uwhere="uc-aws"
             mtype="ec2";;
+        ec2-cn-release)
+            uwhere="uc-aws-cn-release"
+            mtype="ec2";;
         azure-daily|azure)
             uwhere="uc-azure-daily"
             mtype="azure";;
