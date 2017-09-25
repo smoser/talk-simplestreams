@@ -132,7 +132,7 @@ main() {
             uwhere="uc-azure-daily"
             mtype="azure";;
         azure-release)
-            uwhere="uc-azure-daily"
+            uwhere="uc-azure-release"
             mtype="azure";;
         gce-daily|gce)
             uwhere="uc-gce-daily"
