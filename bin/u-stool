@@ -15,6 +15,7 @@ sdata=(
   [uc-release]="$CIU_COM_R/streams/v1/index.sjson"
   [uc-aws]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:aws.sjson"
   [uc-aws-daily]="$CIU_COM_D/streams/v1/com.ubuntu.cloud:daily:aws.sjson"
+  [uc-aws-cn-release]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:aws-cn.sjson"
   [uc-azure]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:azure.sjson"
   [uc-azure-daily]="$CIU_COM_D/streams/v1/com.ubuntu.cloud:daily:azure.sjson"
   [uc-azure-release]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:azure.sjson"
