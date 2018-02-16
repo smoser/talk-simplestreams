@@ -1,0 +1,58 @@
+name: image-status
+version: '0.1'
+summary: Helpful utility to check the status of Ubuntu cloud images.
+description: |
+  Helpful utility to check the status of Ubuntu cloud images.
+
+  A wrapper around sstream-query which queries the Ubuntu's simplestreams feeds
+  (http://cloud-images.ubuntu.com/daily/streams/v1/ and
+  http://cloud-images.ubuntu.com/releases/streams/v1/).
+
+  See https://github.com/smoser/talk-simplestreams/ for source.
+
+  Usage:
+  image-status --help # to see all available options
+
+  image-status cloud-release xenial # to see most recent Ubuntu Xenial release images on http://cloud-images.ubuntu.com/
+  image-status cloud-daily xenial # to see most recent Ubuntu Xenial daily images on http://cloud-images.ubuntu.com/
+
+  image-status gce-release xenial # to see most recent Ubuntu Xenial release images on GCE
+  image-status gce-daily xenial # to see most recent Ubuntu Xenial daily images on GCE
+
+  image-status ec2-release xenial # to see most recent Ubuntu Xenial release AMIs on EC2
+  image-status ec2-daily xenial # to see most recent Ubuntu Xenial daily AMIs on EC2
+
+  image-status azure-release xenial # to see most recent Ubuntu Xenial release images on Azure
+  image-status azure-daily xenial # to see most recent Ubuntu Xenial daily images on Azure
+
+  image-status maas-release xenial # to see most recent Ubuntu Xenial release images for maas V2
+  image-status maas-daily xenial # to see most recent Ubuntu Xenial daily images for maas V2
+
+  image-status maas3-release xenial # to see most recent Ubuntu Xenial release images for maas V3
+  image-status maas3-daily xenial # to see most recent Ubuntu Xenial daily images for maas V3
+
+grade: stable
+confinement: strict
+
+apps:
+  image-status:
+    command: image-status
+    plugs:
+      - network
+
+parts:
+  image-status:
+    plugin: dump
+    source: bin
+    prepare: |
+      chmod +x image-status
+      chmod +x u-stool
+    stage-packages:
+      - ubuntu-cloudimage-keyring
+      - simplestreams
+      - distro-info
+      - bsdmainutils
+      - gpgv
+    organize:
+      image-status: usr/bin/image-status
+      u-stool: usr/bin/u-stool
