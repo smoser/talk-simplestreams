@@ -201,7 +201,7 @@ main() {
 
     $defaults && filters=( "${def_filters[@]}" "${filters[@]}" )
 
-    cmd=( usquery $maxarg "$fmt"
+    cmd=( u-stool $maxarg "$fmt"
           "$uwhere" "${pt[@]}" "${filters[@]}" )
     debug 1 "${cmd[*]}"
 
