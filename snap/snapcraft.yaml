@@ -1,4 +1,4 @@
-name: image-status
+name: image-status-philroche
 version: '0.1'
 summary: Helpful utility to check the status of Ubuntu cloud images.
 description: |
