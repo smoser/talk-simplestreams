@@ -2,6 +2,10 @@
 #
 # https://github.com/smoser/talk-simplestreams/blob/master/bin/u-stool
 
+# If this tool is running in a snap we should update the path to use when
+# querying the ubuntu-cloudimage-keyring
+SNAP_PATH=${SNAP:-""}
+
 declare -A sdata
 CIU_COM="http://cloud-images.ubuntu.com"
 CIU_COM_R="$CIU_COM/releases"
@@ -93,7 +97,7 @@ done
 keyopt=""
 case "$url" in
    *.json) :;;
-   *) keyopt="--keyring=/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg";;
+   *) keyopt="--keyring=${SNAP_PATH}/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg";;
 esac
 
 cmd=( "$SPROG" ${keyopt:+"${keyopt}"} "${opts[@]}" "${args[@]}" )
