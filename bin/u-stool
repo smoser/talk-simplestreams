@@ -28,6 +28,7 @@ sdata=(
   [uc-dl]="$CIU_COM_R/streams/v1/com.ubuntu.cloud:released:download.sjson"
   [uc-daily]="$CIU_COM/daily/streams/v1/index.sjson"
   [uc-dl-daily]="$CIU_COM/daily/streams/v1/com.ubuntu.cloud:daily:download.sjson"
+  [uc-dl-daily-minimal]="$CIU_COM/minimal/daily/streams/v1/com.ubuntu.cloud.daily:download.sjson"
 
   [maas-release]="$MAAS_v2/releases/streams/v1/index.sjson"
   [maas-daily]="$MAAS_v2/daily/streams/v1/index.sjson"
