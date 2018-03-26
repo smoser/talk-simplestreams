@@ -12,7 +12,7 @@ dump_supported() {
     cat <<EOF
 description    | names
 Azure cloud    | azure   azure-daily   azure-release
-cloud images   | cloud   cloud-daily   cloud-release
+cloud images   | cloud   cloud-daily   cloud-release cloud-daily-minimal
 AWS EC2        | ec2     ec2-daily     ec2-release
 Google Compute | gce     gce-daily     gce-release
 MAAS v2        | maas    maas-daily    maas-release
@@ -122,6 +122,9 @@ main() {
         cloud-release)
             mtype="cloud"
             uwhere="uc-dl";;
+        cloud-daily-minimal|cloud-minimal)
+            mtype="cloud"
+            uwhere="uc-dl-daily-minimal";;
         ec2-daily|ec2)
             uwhere="uc-aws-daily"
             mtype="ec2";;
