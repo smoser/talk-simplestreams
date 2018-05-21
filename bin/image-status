@@ -181,21 +181,22 @@ main() {
         fi
         case "$tok" in
             x) defaults=false;;
-            supported) reltok="$tok";;
+            supported) reltok="supported=True";;
             json) fmt="--json";;
             path) fmt="--output-format=%(path)s";;
             url) fmt="--output-format=%(item_url)s";;
             all) maxarg="";;
-            *=*|*~*) filters[${#filters[@]}]="$tok";;
+            *=*|*~*)
+                filters[${#filters[@]}]="$tok"
+                case "$tok" in
+                    release~*|release=*) reltok="$tok";;
+                esac
+                ;;
             *) pt[${#pt[@]}]="$tok";;
         esac
     done
-    if [ -z "$reltok" -o "$reltok" = "supported" ]; then
-        local m=""
-        for r in $(ubuntu-distro-info --supported); do
-            m="${m:+${m}|}$r"
-        done
-        def_filters[${#def_filters[@]}]="release~$m"
+    if [ -z "$reltok" ]; then
+        def_filters[${#def_filters[@]}]="supported=True"
     fi
 
     if [ -z "$columns" -a "$dfmt" = "$fmt" ]; then
