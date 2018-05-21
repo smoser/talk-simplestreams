@@ -62,7 +62,7 @@ inargs() {
 
 main() {
     local short_opts="hCco:v"
-    local long_opts="help,no-columns,output:,columns,max:,verbose"
+    local long_opts="help,no-columns,output-format:,columns,max:,verbose"
     local getopt_out=""
     getopt_out=$(getopt --name "${0##*/}" \
         --options "${short_opts}" --long "${long_opts}" -- "$@") &&
@@ -70,7 +70,7 @@ main() {
         { bad_Usage; return; }
 
     local cur="" next="" max=1
-    local output="" columns=""
+    local output="" columns="" cfmt=""
 
     while [ $# -ne 0 ]; do
         cur="$1"; next="$2";
@@ -78,7 +78,7 @@ main() {
             -h|--help) Usage ; exit 0;;
             -C|--no-columns) columns=false;;
             -c|--columns) columns=true;;
-            -o|--output) output=$next; shift;;
+            -o|--output-format) cfmt=$next; shift;;
             -v|--verbose) VERBOSITY=$((${VERBOSITY}+1));;
                --max) max=$next;;
             --) shift; break;;
@@ -204,6 +204,7 @@ main() {
 
     $defaults && filters=( "${def_filters[@]}" "${filters[@]}" )
 
+    [ -n "$cfmt" ] && fmt="--output-format=$cfmt"
     cmd=( u-stool $maxarg "$fmt"
           "$uwhere" "${pt[@]}" "${filters[@]}" )
     debug 1 "${cmd[*]}"
