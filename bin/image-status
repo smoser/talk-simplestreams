@@ -196,7 +196,11 @@ main() {
         esac
     done
     if [ -z "$reltok" ]; then
-        def_filters[${#def_filters[@]}]="supported=True"
+        local m=""
+        for r in $(ubuntu-distro-info --supported); do
+            m="${m:+${m}|}$r"
+        done
+        def_filters[${#def_filters[@]}]="release~$m"
     fi
 
     if [ -z "$columns" -a "$dfmt" = "$fmt" ]; then
