@@ -12,9 +12,9 @@ dump_supported() {
     cat <<EOF
 description    | names
 Azure cloud    | azure   azure-daily   azure-release
-cloud images   | cloud   cloud-daily   cloud-release cloud-daily-minimal
-AWS EC2        | ec2     ec2-daily     ec2-release
-Google Compute | gce     gce-daily     gce-release
+cloud images   | cloud   cloud-daily   cloud-release    cloud-daily-minimal     cloud-release-minimal 
+AWS EC2        | ec2     ec2-daily     ec2-release      ec2-daily-minimal       ec2-release-minimal  
+Google Compute | gce     gce-daily     gce-release      gce-daily-minimal       gce-release-minimal 
 MAAS v2        | maas    maas-daily    maas-release
 MAAS v3        | maas3   maas3-daily   maas3-release
 EOF
@@ -122,9 +122,18 @@ main() {
         cloud-release)
             mtype="cloud"
             uwhere="uc-dl";;
-        cloud-daily-minimal|cloud-minimal)
+        cloud-release-minimal|cloud-minimal)
+            mtype="cloud"
+            uwhere="uc-dl-release-minimal";;
+        cloud-daily-minimal)
             mtype="cloud"
             uwhere="uc-dl-daily-minimal";;
+        ec2-release-minimal|ec2-minimal)
+            uwhere="uc-aws-release-minimal"
+            mtype="ec2";; 
+        ec2-daily-minimal)
+            uwhere="uc-aws-daily-minimal"
+            mtype="ec2";;            
         ec2-daily|ec2)
             uwhere="uc-aws-daily"
             mtype="ec2";;
@@ -140,6 +149,12 @@ main() {
         azure-release)
             uwhere="uc-azure-release"
             mtype="azure";;
+        gce-release-minimal|gce-minimal)
+            uwhere="uc-gce-release-minimal"
+            mtype="gce";;
+        gce-daily-minimal)
+            uwhere="uc-gce-daily-minimal"
+            mtype="gce";;
         gce-daily|gce)
             uwhere="uc-gce-daily"
             mtype="gce";;
