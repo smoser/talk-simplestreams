@@ -16,8 +16,8 @@ cloud images   | cloud   cloud-daily          cloud-release    cloud-daily-minim
 AWS EC2        | ec2     ec2-daily            ec2-release      ec2-daily-minimal       ec2-release-minimal
 Google Compute | gce     gce-daily            gce-release      gce-daily-minimal       gce-release-minimal
 MAAS v2        | maas    maas-daily           maas-release
-MAAS v3        | maas3   maas3-daily          maas3-release
-MAAS v3 Centos | maas3c  maas3-daily-centos   maas3-release-centos
+MAAS v3        | maas3   maas3-daily
+MAAS v3 Centos | maas3c  maas3-daily-centos
 EOF
 }
 
