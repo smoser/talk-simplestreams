@@ -4,7 +4,10 @@ VERBOSITY=0
 TEMP_D=""
 
 ARCHES=( amd64 i386 s390x powerpc ppc64el armhf arm64 )
-RELEASES=( $(ubuntu-distro-info --all) )
+ALL_RELEASES=(
+    $(ubuntu-distro-info --all)
+    "centos66" "centos70"
+)
 error() { echo "$@" 1>&2; }
 fail() { [ $# -eq 0 ] || error "$@"; exit 1; }
 
@@ -60,6 +63,17 @@ inargs() {
     done
     return 1
 }
+
+join() {
+    # join(delim, args)
+    local delim="$1" i="" ret=""
+    shift;
+    for i in "$@"; do
+        ret="${ret}${delim}$i"
+    done
+    echo "${ret#${delim}}"
+}
+
 
 main() {
     local short_opts="hCco:v"
@@ -178,7 +192,6 @@ main() {
             def_filters=( "${def_filters[@]}" "ftype=squashfs" )
             fmt="$maas3_fmt";;
         maas3c)
-            RELEASES=( "centos66" "centos70" )
             def_filters=( "${def_filters[@]}" "ftype=root-tgz" )
             fmt="$maas3c_fmt";;
         cloud)
@@ -197,15 +210,17 @@ main() {
     filters=( )
     pt=( )
     for tok in "$@"; do
-        if inargs "$tok" "${RELEASES[@]}"; then
+        if inargs "$tok" "${ALL_RELEASES[@]}"; then
             tok="release=$tok"
             reltok="$tok"
         elif inargs "$tok" "${ARCHES[@]}"; then
             tok="arch=$tok"
+        elif [ "$tok" = "supported" ]; then
+            reltok="$tok"
+            tok="supported=True"
         fi
         case "$tok" in
             x) defaults=false;;
-            supported) reltok="supported=True";;
             json) fmt="--json";;
             path) fmt="--output-format=%(path)s";;
             url) fmt="--output-format=%(item_url)s";;
@@ -219,12 +234,17 @@ main() {
             *) pt[${#pt[@]}]="$tok";;
         esac
     done
+
     if [ -z "$reltok" ]; then
-        local m=""
-        for r in ${RELEASES[@]}; do
-            m="${m:+${m}|}$r"
-        done
-        def_filters[${#def_filters[@]}]="release~$m"
+        local sfilter="supported=True"
+        case "$where" in
+            cloud-*|ec2*) sfilter="supported=True";;
+            maas*centos) sfilter="";; # all centos supported
+            *)  # LP: #1773988.
+                sfilter="release~("$(
+                    join "|" $(ubuntu-distro-info --supported))")";;
+        esac
+        [ -z "${sfilter}" ] || def_filters[${#def_filters[@]}]="${sfilter}"
     fi
 
     if [ -z "$columns" -a "$dfmt" = "$fmt" ]; then
