@@ -121,7 +121,7 @@ main() {
     def_filters=( "arch=amd64" )
     mtype=""
 
-    local uwhere=""
+    local uwhere=""  # 'usquery where' the entry in usquery's sdata.
     case "$where" in
         maas|maas-daily)
             mtype="maas"
@@ -237,9 +237,9 @@ main() {
 
     if [ -z "$reltok" ]; then
         local sfilter="supported=True"
-        case "$where" in
+        case "$uwhere" in
             cloud-*|ec2*) sfilter="supported=True";;
-            maas*centos) sfilter="";; # all centos supported
+            maas3-daily-centos) sfilter="";; # all centos are supported
             *)  # LP: #1773988.
                 sfilter="release~("$(
                     join "|" $(ubuntu-distro-info --supported))")";;
