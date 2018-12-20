@@ -114,7 +114,7 @@ main() {
     local maas3_fmt="%(release)-7s$tab%(arch)s/%(subarch)s/%(kflavor)s$tab%(version_name)s$tab%(item_name)s"
     local maas3c_fmt="%(release)-7s$tab%(arch)s/%(subarch)s$tab%(version_name)s$tab%(item_name)s"
     local img_fmt="%(release)-7s$tab%(arch)s$tab%(version_name)s$tab%(item_name)s"
-    local ec2_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(root_store)-8s$tab%(virt)-3s$tab%(id)s"
+    local ec2_fmt="%(release)-7s$tab%(arch)s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(root_store)-8s$tab%(virt)-3s$tab%(id)s"
     local azure_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(id)s"
     local gce_fmt="%(release)-7s$tab%(version_name)-10s$tab%(crsn)-14s$tab%(id)s"
     local maas_def_filters="" img_def_filters="" def_filters="" dfmt=""
