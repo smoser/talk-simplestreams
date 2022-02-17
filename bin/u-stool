@@ -41,7 +41,8 @@ sdata=(
   [maas-eph-daily]="$MAAS_v2/daily/streams/v1/com.ubuntu.maas:daily:v2:download.sjson"
 
   [maas3-daily]="$MAAS_v3/daily/streams/v1/index.sjson"
-  [maas3-eph-daily]="$MAAS_v3/daily/streams/v1/com.ubuntu.maas:daily:v3:download.sjson"
+  [maas3-eph-daily]="$MAAS_v3/candidate/streams/v1/com.ubuntu.maas:candidate:v3:download.sjson"
+  [maas3-eph-stable]="$MAAS_v3/stable/streams/v1/com.ubuntu.maas:stable:v3:download.sjson"
   [maas3-daily-centos]="$MAAS_v3/daily/streams/v1/com.ubuntu.maas:daily:centos-bases-download.json"
 
   [cirros]="http://download.cirros-cloud.net/streams/v1/index.json"
